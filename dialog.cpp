@@ -42,8 +42,13 @@
 #include <QSettings>
 #include "dialog.h"
 
+QString base64_encode(QString string);
+QString base64_decode(QString string);
+
+
 Dialog::Dialog()
 {
+
 
     createFormGroupBox();
 
@@ -69,7 +74,7 @@ void Dialog::romik() {
 
     settings->setValue("section/login",Username->text());
     settings->setValue("section/server", ipAddress->text());
-    settings->setValue("section/password", Pass->text());
+    settings->setValue("section/password", base64_encode(Pass->text()));
     settings->sync();
 
     QProcess process;
@@ -93,7 +98,7 @@ void Dialog::createFormGroupBox()
 
     Username->setText(settings->value("section/login").toString());
     ipAddress->setText(settings->value("section/server").toString());
-    Pass->setText(settings->value("section/password").toString());
+    Pass->setText(base64_decode(settings->value("section/password").toString()));
 
     Pass->setEchoMode(QLineEdit::Password);
 

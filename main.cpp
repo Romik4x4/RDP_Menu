@@ -42,6 +42,9 @@
 
 #include "dialog.h"
 
+QString base64_encode(QString string);
+QString base64_decode(QString string);
+
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
@@ -51,4 +54,16 @@ int main(int argc, char *argv[])
     dialog.show();
 
     return app.exec();
+}
+
+QString base64_encode(QString string){
+    QByteArray ba;
+    ba.append(string);
+    return ba.toBase64();
+}
+
+QString base64_decode(QString string){
+    QByteArray ba;
+    ba.append(string);
+    return QByteArray::fromBase64(ba);
 }
