@@ -55,6 +55,7 @@ class QMenuBar;
 class QPushButton;
 class QTextEdit;
 class QProcess;
+class QNetworkInterface;
 QT_END_NAMESPACE
 
 class Dialog : public QDialog
@@ -75,8 +76,8 @@ private:
 
     enum { NumGridRows = 3, NumButtons = 4 };
 
-    QComboBox *caseCombo;
 
+    QComboBox *caseCombo;
     QMenuBar *menuBar;
     QGroupBox *horizontalGroupBox;
     QGroupBox *gridGroupBox;

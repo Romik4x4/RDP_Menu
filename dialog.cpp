@@ -40,6 +40,7 @@
 
 #include <QtGui>
 #include <QSettings>
+
 #include "dialog.h"
 
 QString base64_encode(QString string);
@@ -69,11 +70,16 @@ Dialog::Dialog()
     setLayout(mainLayout);
 
     setWindowTitle(tr("Remote connection"));
+
 }
 
 void Dialog::changeCase(int comboIndex) {
 
-    qDebug() <<  caseCombo->itemData(comboIndex).toString();
+    qDebug() <<  caseCombo->itemData(comboIndex).toString().split(" ")[0];
+    QProcess process;
+    process.startDetached("/usr/bin/xrandr -s "+caseCombo->itemData(comboIndex).toString().split(" ")[0]);
+    process.waitForFinished(-1);
+
 }
 
 void Dialog::romik() {
@@ -114,7 +120,7 @@ void Dialog::createXrandr() {
 
     caseCombo = new QComboBox;
 
-    int pos,p=0;
+    int pos=0,p=0;
 
     for (int i = 0; i < list.size(); ++i) {
         if (list.at(i).startsWith(" ")) {
