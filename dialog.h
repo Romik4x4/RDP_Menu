@@ -44,6 +44,7 @@
 #include <QDialog>
 
 QT_BEGIN_NAMESPACE
+class QComboBox;
 class QAction;
 class QDialogButtonBox;
 class QGroupBox;
@@ -53,6 +54,7 @@ class QMenu;
 class QMenuBar;
 class QPushButton;
 class QTextEdit;
+class QProcess;
 QT_END_NAMESPACE
 
 class Dialog : public QDialog
@@ -64,12 +66,16 @@ public:
 
 private slots:
      void romik();
+     void changeCase(int);
 
 private:
 
     void createFormGroupBox();
+    void createXrandr();
 
     enum { NumGridRows = 3, NumButtons = 4 };
+
+    QComboBox *caseCombo;
 
     QMenuBar *menuBar;
     QGroupBox *horizontalGroupBox;
@@ -81,6 +87,7 @@ private:
     QLineEdit *lineEdits[NumGridRows];
     QPushButton *buttons[NumButtons];
     QDialogButtonBox *buttonBox;
+    QProcess *process;
 
     QMenu *fileMenu;
     QAction *exitAction;

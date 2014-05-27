@@ -51,21 +51,29 @@ Dialog::Dialog()
 
 
     createFormGroupBox();
+    createXrandr();
 
     buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok
                                      | QDialogButtonBox::Cancel);
 
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(romik()));
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+    connect(caseCombo, SIGNAL(activated(int)), this, SLOT(changeCase(int)));
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
 
-    mainLayout->addWidget(formGroupBox);
-    mainLayout->addWidget(buttonBox);
+    mainLayout->addWidget(formGroupBox); //! Ввод данных
+    mainLayout->addWidget(caseCombo);    //! Выбор разрешения
+    mainLayout->addWidget(buttonBox);    //! Кноки
 
     setLayout(mainLayout);
 
     setWindowTitle(tr("Remote connection"));
+}
+
+void Dialog::changeCase(int comboIndex) {
+
+    qDebug() <<  caseCombo->itemData(comboIndex).toString();
 }
 
 void Dialog::romik() {
@@ -81,6 +89,42 @@ void Dialog::romik() {
     process.start("/usr/bin/xfreerdp -p "+Pass->text()+" -u "+Username->text()+" "+ipAddress->text());
     process.waitForFinished(-1);
     accept();
+
+}
+
+
+void Dialog::createXrandr() {
+
+    QLabel *caseLabel = new QLabel;
+
+    caseLabel->setText(tr("Display"));
+
+    QProcess process;
+
+    process.start("/usr/bin/xrandr");
+    process.waitForReadyRead();
+    process.waitForFinished();
+    QByteArray xmode = process.readAllStandardOutput();
+
+    //! qDebug() << xmode.data();
+
+    QList<QByteArray> list;
+
+    list = xmode.split('\n');
+
+    caseCombo = new QComboBox;
+
+    int pos,p=0;
+
+    for (int i = 0; i < list.size(); ++i) {
+        if (list.at(i).startsWith(" ")) {
+            if (list.at(i).indexOf("*") > 0) pos = p;
+            caseCombo->addItem(list.at(i).trimmed(),QVariant(list.at(i).trimmed()));
+            p++;
+        }
+        }
+
+     caseCombo->setCurrentIndex(pos);
 
 }
 
