@@ -56,6 +56,7 @@ class QPushButton;
 class QTextEdit;
 class QProcess;
 class QNetworkInterface;
+class QTextCodec;
 QT_END_NAMESPACE
 
 class Dialog : public QDialog
@@ -68,6 +69,7 @@ public:
 private slots:
      void romik();
      void changeCase(int);
+     void reboot();
 
 private:
 
@@ -77,6 +79,7 @@ private:
     enum { NumGridRows = 3, NumButtons = 4 };
 
 
+    QPushButton *reb;
     QComboBox *caseCombo;
     QMenuBar *menuBar;
     QGroupBox *horizontalGroupBox;

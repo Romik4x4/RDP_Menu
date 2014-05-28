@@ -47,7 +47,10 @@ QString base64_decode(QString string);
 
 int main(int argc, char *argv[])
 {
+
+
     QApplication app(argc, argv);
+
 
     Dialog dialog;
 

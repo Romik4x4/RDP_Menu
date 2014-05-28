@@ -53,14 +53,19 @@ QString base64_decode(QString string);
 Dialog::Dialog()
 {
 
+    QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8"));
+
+
     createFormGroupBox();
     createXrandr();
 
-    buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok
-                                     | QDialogButtonBox::Cancel);
+    reb = new QPushButton(tr("Выключить"),this);
+
+    buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok);
+    buttonBox->addButton(reb,QDialogButtonBox::RejectRole);
 
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(romik()));
-    connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+    connect(buttonBox, SIGNAL(rejected()), this, SLOT(reboot()));
     connect(caseCombo, SIGNAL(activated(int)), this, SLOT(changeCase(int)));
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
@@ -71,16 +76,24 @@ Dialog::Dialog()
 
     setLayout(mainLayout);
 
-    setWindowTitle(tr("Remote connection"));
+    setWindowTitle(tr("Удаленный рабочий стол"));
 
 }
 
 void Dialog::changeCase(int comboIndex) {
 
-    //! qDebug() <<  caseCombo->itemData(comboIndex).toString().split(" ")[0];
     QProcess process;
     process.startDetached("/usr/bin/xrandr -s "+caseCombo->itemData(comboIndex).toString().split(" ")[0]);
     process.waitForFinished(-1);
+
+}
+
+void Dialog::reboot() {
+
+    QProcess process;
+    process.startDetached("/usr/bin/sudo /sbin/shutdown -t 0 -r now xrandr");
+    process.waitForFinished(-1);
+    accept();
 
 }
 
@@ -94,7 +107,7 @@ void Dialog::romik() {
     settings->sync();
 
     QProcess process;
-    process.start("/usr/bin/xfreerdp -p "+Pass->text()+" -u "+Username->text()+" "+ipAddress->text());
+    process.start("/usr/bin/xfreerdp -f -x lan -p "+Pass->text()+" -u "+Username->text()+" "+ipAddress->text());
     process.waitForFinished(-1);
     accept();
 
@@ -102,10 +115,6 @@ void Dialog::romik() {
 
 
 void Dialog::createXrandr() {
-
-    QLabel *caseLabel = new QLabel;
-
-    caseLabel->setText(tr("Display"));
 
     QProcess process;
 
@@ -147,7 +156,7 @@ void Dialog::createFormGroupBox()
     }
 
 
-    formGroupBox = new QGroupBox(tr("Enter remote desktop parameters"));
+    formGroupBox = new QGroupBox(tr("Введите праметры соединения"));
 
     QFormLayout *layout = new QFormLayout;
 
@@ -163,11 +172,11 @@ void Dialog::createFormGroupBox()
 
     Pass->setEchoMode(QLineEdit::Password);
 
-    layout->addRow(new QLabel(tr("Your IP Address: ")),new QLabel(xipAddress));
+    layout->addRow(new QLabel(tr("Ваш IP адрес: ")),new QLabel(xipAddress));
 
-    layout->addRow(new QLabel(tr("IP Address:")), ipAddress);
-    layout->addRow(new QLabel(tr("Username:")),  Username);
-    layout->addRow(new QLabel(tr("Password:")), Pass);
+    layout->addRow(new QLabel(tr("Сервер:")), ipAddress);
+    layout->addRow(new QLabel(tr("Пользователь:")),  Username);
+    layout->addRow(new QLabel(tr("Пароль:")), Pass);
 
     formGroupBox->setLayout(layout);
 }
