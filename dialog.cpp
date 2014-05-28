@@ -91,7 +91,7 @@ void Dialog::changeCase(int comboIndex) {
 void Dialog::reboot() {
 
     QProcess process;
-    process.startDetached("/usr/bin/sudo /sbin/shutdown -t 0 -r now xrandr");
+    process.startDetached("/usr/bin/sudo /sbin/shutdown -t 0 -h now");
     process.waitForFinished(-1);
     accept();
 
