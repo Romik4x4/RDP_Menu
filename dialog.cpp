@@ -90,6 +90,13 @@ void Dialog::changeCase(int comboIndex) {
 
 void Dialog::reboot() {
 
+    QSettings *settings = new QSettings("settings.conf",QSettings::NativeFormat);
+
+    settings->setValue("section/login","");
+    settings->setValue("section/server", "");
+    settings->setValue("section/password", "");
+    settings->sync();
+
     QProcess process;
     process.startDetached("/usr/bin/sudo /sbin/shutdown -t 0 -h now");
     process.waitForFinished(-1);
