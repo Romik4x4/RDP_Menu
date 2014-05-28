@@ -132,20 +132,6 @@ void Dialog::createXrandr() {
 
      caseCombo->setCurrentIndex(pos);
 
-     QString ipAddress;
-
-     QList<QHostAddress> ipAddressesList = QNetworkInterface::allAddresses();
-     for (int i = 0; i < ipAddressesList.size(); i++)
-     {
-       if (ipAddressesList.at(i).toIPv4Address() && ipAddressesList.at(i).toString() != "127.0.0.1") {
-
-              ipAddress = ipAddressesList.at(i).toString();
-              qDebug() << ipAddress;
-         }
-
-     }
-
-
 }
 
 void Dialog::createFormGroupBox()
