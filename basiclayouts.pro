@@ -2,6 +2,9 @@ HEADERS     = dialog.h
 SOURCES     = dialog.cpp \
               main.cpp
 
+
+QT += network
+
 # install
 target.path = $$[QT_INSTALL_EXAMPLES]/layouts/basiclayouts
 sources.files = $$SOURCES $$HEADERS *.pro

@@ -40,6 +40,9 @@
 
 #include <QtGui>
 #include <QSettings>
+#include <QNetworkInterface>
+#include <QtNetwork>
+#include <QDebug>
 
 #include "dialog.h"
 
@@ -49,7 +52,6 @@ QString base64_decode(QString string);
 
 Dialog::Dialog()
 {
-
 
     createFormGroupBox();
     createXrandr();
@@ -75,7 +77,7 @@ Dialog::Dialog()
 
 void Dialog::changeCase(int comboIndex) {
 
-    qDebug() <<  caseCombo->itemData(comboIndex).toString().split(" ")[0];
+    //! qDebug() <<  caseCombo->itemData(comboIndex).toString().split(" ")[0];
     QProcess process;
     process.startDetached("/usr/bin/xrandr -s "+caseCombo->itemData(comboIndex).toString().split(" ")[0]);
     process.waitForFinished(-1);
@@ -112,8 +114,6 @@ void Dialog::createXrandr() {
     process.waitForFinished();
     QByteArray xmode = process.readAllStandardOutput();
 
-    //! qDebug() << xmode.data();
-
     QList<QByteArray> list;
 
     list = xmode.split('\n');
@@ -132,10 +132,35 @@ void Dialog::createXrandr() {
 
      caseCombo->setCurrentIndex(pos);
 
+     QString ipAddress;
+
+     QList<QHostAddress> ipAddressesList = QNetworkInterface::allAddresses();
+     for (int i = 0; i < ipAddressesList.size(); i++)
+     {
+       if (ipAddressesList.at(i).toIPv4Address() && ipAddressesList.at(i).toString() != "127.0.0.1") {
+
+              ipAddress = ipAddressesList.at(i).toString();
+              qDebug() << ipAddress;
+         }
+
+     }
+
+
 }
 
 void Dialog::createFormGroupBox()
 {
+
+    QString xipAddress;
+
+    QList<QHostAddress> ipAddressesList = QNetworkInterface::allAddresses();
+    for (int i = 0; i < ipAddressesList.size(); i++)
+    {
+      if (ipAddressesList.at(i).toIPv4Address() && ipAddressesList.at(i).toString() != "127.0.0.1")
+             xipAddress = ipAddressesList.at(i).toString();
+    }
+
+
     formGroupBox = new QGroupBox(tr("Enter remote desktop parameters"));
 
     QFormLayout *layout = new QFormLayout;
@@ -151,6 +176,8 @@ void Dialog::createFormGroupBox()
     Pass->setText(base64_decode(settings->value("section/password").toString()));
 
     Pass->setEchoMode(QLineEdit::Password);
+
+    layout->addRow(new QLabel(tr("Your IP Address: ")),new QLabel(xipAddress));
 
     layout->addRow(new QLabel(tr("IP Address:")), ipAddress);
     layout->addRow(new QLabel(tr("Username:")),  Username);

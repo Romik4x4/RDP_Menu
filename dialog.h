@@ -96,6 +96,7 @@ private:
     QLineEdit *ipAddress;
     QLineEdit *Username;
     QLineEdit *Pass;
+    QNetworkInterface *ipAddressesList;
 
 };
 
